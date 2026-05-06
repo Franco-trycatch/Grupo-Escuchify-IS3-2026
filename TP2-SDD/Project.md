@@ -4,8 +4,6 @@
 1. **Usuarios y Autenticación**: Gestión de registro, inicio de sesión y perfiles de usuarios. Entidad original: `Usuario`.
 2. **Gestión de Eventos**: Creación, edición y administración de eventos académicos (cursos, jornadas, congresos, charlas). Entidades originales: `Evento`, `TipoEvento`.
 3. **Inscripciones**: Registro de participantes a eventos (autónomo y por personal del evento). Entidad original: `Inscripción`.
-4. **Roles y Acreditación**: Gestión de roles (organizador/participante/disertante) y acreditación de participantes. Entidades originales: `Rol`, `Acreditación`.
-5. **Encuestas**: Gestión de comentarios y encuestas de satisfacción post-evento. Entidades originales: `Encuesta`, `PreguntaEncuesta`, `RespuestaEncuesta`.
 6. **Certificados**: Generación de certificados (asistencia, aprobación, participación en calidad de autor/expositor). Entidades originales: `Certificado`, `TipoCertificado`.
 7. **Informes y Agendas**: Generación de informes y agendas del evento. Entidades originales: `Informe`, `AgendaEvento`.
 8. **Catálogo Público**: Visualización pública de eventos con filtros (futuros/pasados). No tiene entidades originales (consulta a `Evento` de Gestión de Eventos).
@@ -55,22 +53,6 @@ Algunos detalles:
    - Criterio de aceptación: El personal puede buscar usuarios existentes o crear registros temporales; se validan cupos y fechas límite.
 3. Como usuario, quiero cancelar mi inscripción a un evento, para liberar cupo.
    - Criterio de aceptación: La cancelación es posible hasta 24 horas antes del evento; se libera el cupo ocupado.
-
-### Módulo 4: Roles y Acreditación
-1. Como organizador, quiero asignar roles a los participantes de un evento, para definir sus permisos.
-   - Criterio de aceptación: Se pueden asignar roles de organizador, participante o disertante; un usuario puede tener múltiples roles en diferentes eventos.
-2. Como personal del evento, quiero acreditar a un participante en la entrada del evento, para validar su asistencia.
-   - Criterio de aceptación: La acreditación marca al participante como presente; se valida que el usuario esté inscrito y el evento esté en curso.
-3. Como disertante, quiero ver la lista de participantes acreditados, para conocer mi audiencia.
-   - Criterio de aceptación: Solo los disertantes y organizadores del evento pueden acceder a la lista de acreditados.
-
-### Módulo 5: Encuestas
-1. Como organizador, quiero crear una encuesta de satisfacción para un evento finalizado, para recibir feedback.
-   - Criterio de aceptación: La encuesta se asocia al evento; se pueden agregar preguntas de opción múltiple o abiertas.
-2. Como participante, quiero responder la encuesta de un evento al que asistí, para dar mi opinión.
-   - Criterio de aceptación: Solo participantes acreditados pueden responder la encuesta; se permite una sola respuesta por usuario por evento.
-3. Como organizador, quiero ver los resultados de la encuesta, para evaluar la satisfacción del evento.
-   - Criterio de aceptación: Los resultados se muestran de forma agregada; se exportan a formato CSV si se solicita.
 
 ### Módulo 6: Certificados
 1. Como organizador, quiero generar certificados de asistencia para participantes acreditados, para validar su participación.
@@ -136,28 +118,6 @@ Algunos detalles:
 - RN2: No se permiten inscripciones después de la fecha límite establecida.
 - RN3: Solo se puede cancelar una inscripción hasta 24 horas antes del inicio del evento.
 - RN4: Un usuario no puede inscribirse dos veces al mismo evento.
-
-### Módulo 4: Roles y Acreditación
-#### Requisitos Funcionales
-- RF1: El sistema debe permitir asignar roles (organizador/participante/disertante) a usuarios por evento.
-- RF2: El sistema debe permitir la acreditación de participantes en el evento.
-- RF3: El sistema debe listar participantes acreditados por evento.
-
-#### Reglas de Negocio
-- RN1: Un usuario puede tener diferentes roles en diferentes eventos.
-- RN2: Solo personal autorizado (organizadores) puede realizar acreditaciones.
-- RN3: La acreditación solo es válida para usuarios con inscripción confirmada.
-
-### Módulo 5: Encuestas
-#### Requisitos Funcionales
-- RF1: El sistema debe permitir crear encuestas asociadas a eventos finalizados.
-- RF2: El sistema debe permitir agregar preguntas de opción múltiple y abiertas a las encuestas.
-- RF3: El sistema debe permitir a participantes acreditados responder encuestas.
-
-#### Reglas de Negocio
-- RN1: Solo participantes acreditados pueden responder encuestas del evento.
-- RN2: Un participante solo puede responder una vez por evento.
-- RN3: Las encuestas solo se habilitan después de la finalización del evento.
 
 ### Módulo 6: Certificados
 #### Requisitos Funcionales
@@ -269,7 +229,6 @@ Relaciones:
 Relaciones:
 - 1:N TipoEvento -> Evento (Referencia: Evento.id_tipo_evento FK)
 - 1:N Evento -> Inscripción (Referencia: Inscripción.id_evento FK)
-- 1:N Evento -> Encuesta (Referencia: Encuesta.id_evento FK)
 - 1:N Evento -> Certificado (Referencia: Certificado.id_evento FK)
 - 1:N Evento -> Informe (Referencia: Informe.id_evento FK)
 - 1:N Evento -> AgendaEvento (Referencia: AgendaEvento.id_evento FK)
@@ -287,65 +246,7 @@ Relaciones:
 Relaciones:
 - N:1 Inscripción -> Usuario (Referencia: Usuario.id_usuario PK)
 - N:1 Inscripción -> Evento (Referencia: Evento.id_evento PK)
-- 1:N Inscripción -> Acreditación (Referencia: Acreditación.id_inscripcion FK)
 - 1:N Inscripción -> Certificado (Referencia: Certificado.id_inscripcion FK)
-
-### Módulo 4: Roles y Acreditación
-#### Entidad: Rol
-| Atributo | Tipo de dato | Restricciones | PK/FK |
-|----------|--------------|---------------|-------|
-| id_rol | INT | NOT NULL AUTO_INCREMENT | PK |
-| nombre | VARCHAR(50) | NOT NULL UNIQUE | |
-
-#### Entidad: Acreditación
-| Atributo | Tipo de dato | Restricciones | PK/FK |
-|----------|--------------|---------------|-------|
-| id_acreditacion | INT | NOT NULL AUTO_INCREMENT | PK |
-| id_inscripcion | INT | NOT NULL | FK (Inscripción.id_inscripcion) |
-| fecha_acreditacion | DATETIME | NOT NULL DEFAULT CURRENT_TIMESTAMP | |
-| estado | VARCHAR(20) | NOT NULL DEFAULT 'PRESENTE' | |
-
-Relaciones:
-- N:1 Acreditación -> Inscripción (Referencia: Inscripción.id_inscripcion PK)
-- N:M Usuario_Evento_Rol (tabla intermedia):
-  - id_usuario_evento_rol INT PK AUTO_INCREMENT
-  - id_usuario INT NOT NULL FK (Usuario.id_usuario)
-  - id_evento INT NOT NULL FK (Evento.id_evento)
-  - id_rol INT NOT NULL FK (Rol.id_rol)
-  - UNIQUE (id_usuario, id_evento, id_rol)
-
-### Módulo 5: Encuestas
-#### Entidad: Encuesta
-| Atributo | Tipo de dato | Restricciones | PK/FK |
-|----------|--------------|---------------|-------|
-| id_encuesta | INT | NOT NULL AUTO_INCREMENT | PK |
-| id_evento | INT | NOT NULL | FK (Evento.id_evento) |
-| titulo | VARCHAR(255) | NOT NULL | |
-| fecha_apertura | DATETIME | NOT NULL DEFAULT CURRENT_TIMESTAMP | |
-| fecha_cierre | DATETIME | | |
-
-#### Entidad: PreguntaEncuesta
-| Atributo | Tipo de dato | Restricciones | PK/FK |
-|----------|--------------|---------------|-------|
-| id_pregunta | INT | NOT NULL AUTO_INCREMENT | PK |
-| id_encuesta | INT | NOT NULL | FK (Encuesta.id_encuesta) |
-| texto_pregunta | TEXT | NOT NULL | |
-| tipo_pregunta | VARCHAR(20) | NOT NULL | |
-
-#### Entidad: RespuestaEncuesta
-| Atributo | Tipo de dato | Restricciones | PK/FK |
-|----------|--------------|---------------|-------|
-| id_respuesta | INT | NOT NULL AUTO_INCREMENT | PK |
-| id_pregunta | INT | NOT NULL | FK (PreguntaEncuesta.id_pregunta) |
-| id_usuario | INT | NOT NULL | FK (Usuario.id_usuario) |
-| respuesta | TEXT | NOT NULL | |
-| fecha_respuesta | DATETIME | NOT NULL DEFAULT CURRENT_TIMESTAMP | |
-
-Relaciones:
-- 1:N Encuesta -> PreguntaEncuesta (Referencia: PreguntaEncuesta.id_encuesta FK)
-- 1:N PreguntaEncuesta -> RespuestaEncuesta (Referencia: RespuestaEncuesta.id_pregunta FK)
-- 1:N Encuesta -> Evento (Referencia: Evento.id_evento FK)
-- N:1 RespuestaEncuesta -> Usuario (Referencia: Usuario.id_usuario PK)
 
 ### Módulo 6: Certificados
 #### Entidad: TipoCertificado
@@ -401,7 +302,7 @@ No tiene entidades originales. Consulta la entidad `Evento` del módulo Gestión
 
 ## 6. Plan de Tareas
 ### Tiempo Total Estimado del Proyecto
-Total de días hábiles sumados de todas las tareas: 69 días hábiles → 13.8 semanas (~14 semanas totales).
+Total de días hábiles sumados de todas las tareas: 53 días hábiles → 10.6 semanas (~11 semanas totales).
 
 ### Módulo 1: Usuarios y Autenticación (Total: 10 días hábiles)
 1. Diseño y documentación de entidades y endpoints: 3 días
@@ -423,18 +324,6 @@ Total de días hábiles sumados de todas las tareas: 69 días hábiles → 13.8 
 3. Desarrollo de inscripción manual por personal: 2 días
 4. Desarrollo de cancelación de inscripciones: 1 día
 5. Pruebas unitarias y de integración: 2 días
-
-### Módulo 4: Roles y Acreditación (Total: 8 días hábiles)
-1. Diseño y documentación de entidades y endpoints: 2 días
-2. Desarrollo de asignación de roles: 2 días
-3. Desarrollo de acreditación de participantes: 2 días
-4. Pruebas unitarias y de integración: 2 días
-
-### Módulo 5: Encuestas (Total: 8 días hábiles)
-1. Diseño y documentación de entidades y endpoints: 2 días
-2. Desarrollo de creación de encuestas y preguntas: 2 días
-3. Desarrollo de respuestas a encuestas: 2 días
-4. Pruebas unitarias y de integración: 2 días
 
 ### Módulo 6: Certificados (Total: 9 días hábiles)
 1. Diseño y documentación de entidades y endpoints: 2 días
@@ -486,26 +375,6 @@ Total de días hábiles sumados de todas las tareas: 69 días hábiles → 13.8 
   1. Inscribir a usuario cuando cupo máximo alcanzado → Espera error 400 con mensaje "CUPO_LLENO"
   2. Inscribir después de fecha límite → Espera error 400 con mensaje "FECHA_LIMITE_EXPIRADA"
   3. Cancelar inscripción 12 horas antes del evento → Espera error 400 con mensaje "CANCELACION_NO_PERMITIDA"
-
-### Módulo 4: Roles y Acreditación
-- **Tipo de Prueba**: Unitarias (asignación de roles), Integración (BD), Aceptación (organizador)
-- **Alcance**: Asignación de roles, acreditación de participantes, listado de acreditados
-- **Criterio de Aceptación**: Roles se asignan correctamente; acreditación solo para inscritos.
-- **Criterio de Rechazo**: Permite asignar rol a usuario no inscrito; acreditación sin inscripción válida.
-- **Casos de Prueba de Ejemplo**:
-  1. Asignar rol de disertante a usuario no inscrito → Espera error 400 con mensaje "USUARIO_NO_INSCRITO"
-  2. Acreditar usuario no inscrito → Espera error 400 con mensaje "INSCRIPCION_NO_VALIDA"
-  3. Listar acreditados → Espera lista solo con usuarios con acreditación confirmada
-
-### Módulo 5: Encuestas
-- **Tipo de Prueba**: Unitarias (creación de encuestas), Integración (BD), Aceptación (organizador/participante)
-- **Alcance**: Creación de encuestas, respuestas, visualización de resultados
-- **Criterio de Aceptación**: Encuestas solo para eventos finalizados; respuestas solo para acreditados.
-- **Criterio de Rechazo**: Permite responder encuesta sin acreditación; permite múltiples respuestas por usuario.
-- **Casos de Prueba de Ejemplo**:
-  1. Crear encuesta para evento no finalizado → Espera error 400 con mensaje "EVENTO_NO_FINALIZADO"
-  2. Responder encuesta sin acreditación → Espera error 400 con mensaje "NO_ACREDITADO"
-  3. Responder encuesta dos veces → Espera error 400 con mensaje "ENCUESTA_YA_RESPONDIDA"
 
 ### Módulo 6: Certificados
 - **Tipo de Prueba**: Unitarias (generación de certificados), Integración (BD), Aceptación (organizador/participante)
