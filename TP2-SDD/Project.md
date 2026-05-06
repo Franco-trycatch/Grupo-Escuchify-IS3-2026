@@ -40,14 +40,6 @@ Algunos detalles:
 3. Como usuario, quiero editar mi perfil personal, para mantener mis datos actualizados.
    - Criterio de aceptación: El usuario puede modificar su nombre, apellido y contraseña; se valida que la nueva contraseña cumpla con las reglas de seguridad.
 
-### Módulo 2: Gestión de Eventos
-1. Como organizador, quiero crear un nuevo evento académico, para publicarlo en la plataforma.
-   - Criterio de aceptación: El evento se crea con título, tipo, fechas de inicio/fin, cupos (mínimo/máximo) y fecha límite de inscripción; se asigna estado "ACTIVO" por defecto.
-2. Como organizador, quiero editar un evento existente, para modificar sus detalles o fechas.
-   - Criterio de aceptación: Solo el organizador del evento puede editar sus datos; no se permite modificar fechas si ya hay inscripciones confirmadas.
-3. Como organizador, quiero cancelar un evento, para informar a los participantes.
-   - Criterio de aceptación: El evento cambia a estado "CANCELADO"; se notifica a todos los participantes inscritos.
-
 ### Módulo 3: Inscripciones
 1. Como usuario autenticado, quiero inscribirme de forma autónoma a un evento, para participar en él.
    - Criterio de aceptación: La inscripción se registra si hay cupo disponible y no ha pasado la fecha límite; se genera confirmación automática.
@@ -80,14 +72,6 @@ Algunos detalles:
 3. Como organizador, quiero generar certificados de aprobación para participantes que cumplan con requisitos, para validar su evaluación.
    - Criterio de aceptación: Se generan certificados solo para participantes que aprueben la evaluación del evento; se registra la calificación obtenida.
 
-### Módulo 7: Informes y Agendas
-1. Como organizador, quiero generar un informe de inscripciones de un evento, para conocer la demanda.
-   - Criterio de aceptación: El informe incluye total de inscritos, acreditados, cancelados y lista detallada; se exporta a PDF/Excel.
-2. Como participante, quiero ver la agenda de un evento, para conocer el cronograma de actividades.
-   - Criterio de aceptación: La agenda se muestra públicamente para eventos activos; incluye horarios, títulos de charlas y disertantes.
-3. Como organizador, quiero generar un informe de resultados de encuestas, para evaluar el evento.
-   - Criterio de aceptación: El informe incluye promedios de satisfacción y comentarios destacados; se genera solo para eventos finalizados.
-
 ### Módulo 8: Catálogo Público
 1. Como usuario no autenticado, quiero ver el listado de eventos públicos, para encontrar eventos de interés.
    - Criterio de aceptación: El listado muestra todos los eventos activos con título, tipo, fecha y descripción breve.
@@ -110,19 +94,6 @@ Algunos detalles:
 - RN1: El email de usuario debe ser único en todo el sistema.
 - RN2: Solo usuarios autenticados pueden realizar inscripciones a eventos.
 - RN3: Las contraseñas se almacenan en formato hash (no texto plano).
-
-### Módulo 2: Gestión de Eventos
-#### Requisitos Funcionales
-- RF1: El sistema debe permitir el CRUD de eventos académicos.
-- RF2: El sistema debe asociar un tipo de evento a cada evento creado.
-- RF3: El sistema debe permitir configurar cupos mínimo y máximo por evento.
-- RF4: El sistema debe establecer fecha límite de inscripción por evento.
-
-#### Reglas de Negocio
-- RN1: La fecha de inicio del evento debe ser posterior a la fecha de creación.
-- RN2: La fecha límite de inscripción debe ser anterior a la fecha de inicio del evento.
-- RN3: El cupo máximo no puede ser menor al cupo mínimo (si se definen ambos).
-- RN4: Solo el organizador creador del evento puede editarlo o cancelarlo.
 
 ### Módulo 3: Inscripciones
 #### Requisitos Funcionales
@@ -169,17 +140,6 @@ Algunos detalles:
 - RN1: Los certificados de asistencia solo se generan para participantes con acreditación confirmada.
 - RN2: Los certificados de aprobación requieren una calificación mínima definida por el organizador.
 - RN3: Los certificados de participación (expositor/autor) se generan automáticamente para usuarios con rol de disertante.
-
-### Módulo 7: Informes y Agendas
-#### Requisitos Funcionales
-- RF1: El sistema debe generar informes de inscripciones por evento.
-- RF2: El sistema debe generar agendas de eventos con cronograma de actividades.
-- RF3: El sistema debe generar informes de resultados de encuestas.
-
-#### Reglas de Negocio
-- RN1: Los informes de inscripciones solo son accesibles para organizadores del evento.
-- RN2: Las agendas se muestran públicamente para eventos activos o finalizados.
-- RN3: Los informes de encuestas solo se generan para eventos con encuestas cerradas.
 
 ### Módulo 8: Catálogo Público
 #### Requisitos Funcionales
@@ -243,36 +203,6 @@ Algunos detalles:
 
 Relaciones:
 - 1:N Usuario -> Inscripción (Referencia: Inscripción.id_usuario FK)
-
-### Módulo 2: Gestión de Eventos
-#### Entidad: TipoEvento
-| Atributo | Tipo de dato | Restricciones | PK/FK |
-|----------|--------------|---------------|-------|
-| id_tipo_evento | INT | NOT NULL AUTO_INCREMENT | PK |
-| nombre | VARCHAR(50) | NOT NULL UNIQUE | |
-| descripcion | TEXT | | |
-
-#### Entidad: Evento
-| Atributo | Tipo de dato | Restricciones | PK/FK |
-|----------|--------------|---------------|-------|
-| id_evento | INT | NOT NULL AUTO_INCREMENT | PK |
-| id_tipo_evento | INT | NOT NULL | FK (TipoEvento.id_tipo_evento) |
-| titulo | VARCHAR(255) | NOT NULL | |
-| descripcion | TEXT | | |
-| fecha_inicio | DATETIME | NOT NULL | |
-| fecha_fin | DATETIME | NOT NULL | |
-| cupo_minimo | INT | | |
-| cupo_maximo | INT | | |
-| fecha_limite_inscripcion | DATETIME | NOT NULL | |
-| estado | VARCHAR(20) | NOT NULL DEFAULT 'ACTIVO' | |
-
-Relaciones:
-- 1:N TipoEvento -> Evento (Referencia: Evento.id_tipo_evento FK)
-- 1:N Evento -> Inscripción (Referencia: Inscripción.id_evento FK)
-- 1:N Evento -> Encuesta (Referencia: Encuesta.id_evento FK)
-- 1:N Evento -> Certificado (Referencia: Certificado.id_evento FK)
-- 1:N Evento -> Informe (Referencia: Informe.id_evento FK)
-- 1:N Evento -> AgendaEvento (Referencia: AgendaEvento.id_evento FK)
 
 ### Módulo 3: Inscripciones
 #### Entidad: Inscripción
@@ -369,31 +299,6 @@ Relaciones:
 - N:1 Certificado -> Evento (Referencia: Evento.id_evento PK)
 - N:1 Certificado -> TipoCertificado (Referencia: TipoCertificado.id_tipo_certificado PK)
 
-### Módulo 7: Informes y Agendas
-#### Entidad: Informe
-| Atributo | Tipo de dato | Restricciones | PK/FK |
-|----------|--------------|---------------|-------|
-| id_informe | INT | NOT NULL AUTO_INCREMENT | PK |
-| id_evento | INT | NOT NULL | FK (Evento.id_evento) |
-| tipo_informe | VARCHAR(50) | NOT NULL | |
-| fecha_generacion | DATETIME | NOT NULL DEFAULT CURRENT_TIMESTAMP | |
-| contenido | TEXT | NOT NULL | |
-
-#### Entidad: AgendaEvento
-| Atributo | Tipo de dato | Restricciones | PK/FK |
-|----------|--------------|---------------|-------|
-| id_agenda | INT | NOT NULL AUTO_INCREMENT | PK |
-| id_evento | INT | NOT NULL | FK (Evento.id_evento) |
-| hora_inicio | TIME | NOT NULL | |
-| hora_fin | TIME | NOT NULL | |
-| titulo_actividad | VARCHAR(255) | NOT NULL | |
-| id_disertante | INT | | FK (Usuario.id_usuario) |
-
-Relaciones:
-- N:1 Informe -> Evento (Referencia: Evento.id_evento PK)
-- 1:N AgendaEvento -> Evento (Referencia: Evento.id_evento PK)
-- N:1 AgendaEvento -> Usuario (Referencia: Usuario.id_usuario PK, para disertante)
-
 ### Módulo 8: Catálogo Público
 No tiene entidades originales. Consulta la entidad `Evento` del módulo Gestión de Eventos vía endpoints REST definidos en Contract.md.
 
@@ -401,7 +306,8 @@ No tiene entidades originales. Consulta la entidad `Evento` del módulo Gestión
 
 ## 6. Plan de Tareas
 ### Tiempo Total Estimado del Proyecto
-Total de días hábiles sumados de todas las tareas: 69 días hábiles → 13.8 semanas (~14 semanas totales).
+Total de días hábiles sumados de todas las tareas: 49 días hábiles → 9.8 semanas (~10 semanas totales).
+(Nota: Se han eliminado Módulo 2: Gestión de Eventos y Módulo 7: Informes y Agendas)
 
 ### Módulo 1: Usuarios y Autenticación (Total: 10 días hábiles)
 1. Diseño y documentación de entidades y endpoints: 3 días
@@ -409,13 +315,6 @@ Total de días hábiles sumados de todas las tareas: 69 días hábiles → 13.8 
 3. Desarrollo de inicio de sesión y generación de tokens: 2 días
 4. Desarrollo de edición de perfil: 1 día
 5. Pruebas unitarias y de integración: 2 días
-
-### Módulo 2: Gestión de Eventos (Total: 11 días hábiles)
-1. Diseño y documentación de entidades y endpoints: 3 días
-2. Desarrollo de CRUD de tipos de evento: 1 día
-3. Desarrollo de CRUD de eventos: 3 días
-4. Validación de reglas de negocio (fechas, cupos): 1 día
-5. Pruebas unitarias y de integración: 3 días
 
 ### Módulo 3: Inscripciones (Total: 9 días hábiles)
 1. Diseño y documentación de entidades y endpoints: 2 días
@@ -442,12 +341,6 @@ Total de días hábiles sumados de todas las tareas: 69 días hábiles → 13.8 
 3. Desarrollo de exportación a PDF: 2 días
 4. Pruebas unitarias y de integración: 2 días
 
-### Módulo 7: Informes y Agendas (Total: 9 días hábiles)
-1. Diseño y documentación de entidades y endpoints: 2 días
-2. Desarrollo de generación de informes: 3 días
-3. Desarrollo de creación de agendas: 2 días
-4. Pruebas unitarias y de integración: 2 días
-
 ### Módulo 8: Catálogo Público (Total: 5 días hábiles)
 1. Diseño y documentación de endpoints: 1 día
 2. Desarrollo de listado público de eventos: 2 días
@@ -466,16 +359,6 @@ Total de días hábiles sumados de todas las tareas: 69 días hábiles → 13.8 
   1. Registrar usuario con email duplicado → Espera error 400 con mensaje "EMAIL_DUPLICADO"
   2. Login con contraseña incorrecta → Espera error 401 con mensaje "CREDENCIALES_INVALIDAS"
   3. Editar perfil con contraseña de 6 caracteres → Espera error 400 con mensaje "CONTRASEÑA_INVALIDA"
-
-### Módulo 2: Gestión de Eventos
-- **Tipo de Prueba**: Unitarias (validación de fechas/cupos), Integración (CRUD BD), Aceptación (organizador)
-- **Alcance**: Creación, edición, cancelación de eventos, configuración de cupos y fechas
-- **Criterio de Aceptación**: Eventos se crean con estado "ACTIVO"; reglas de fechas y cupos se validan correctamente.
-- **Criterio de Rechazo**: Permite fecha límite de inscripción posterior a fecha de inicio; cupo máximo menor a mínimo.
-- **Casos de Prueba de Ejemplo**:
-  1. Crear evento con fecha límite > fecha inicio → Espera error 400 con mensaje "FECHA_LIMITE_INVALIDA"
-  2. Editar evento con inscripciones confirmadas → Espera error 400 con mensaje "EVENTO_CON_INSCRIPCIONES"
-  3. Cancelar evento → Espera estado "CANCELADO" y notificación a inscritos
 
 ### Módulo 3: Inscripciones
 - **Tipo de Prueba**: Unitarias (validación de cupos/fechas), Integración (BD), Aceptación (usuario/participante)
@@ -516,16 +399,6 @@ Total de días hábiles sumados de todas las tareas: 69 días hábiles → 13.8 
   1. Generar certificado de asistencia para usuario no acreditado → Espera error 400 con mensaje "NO_ACREDITADO"
   2. Generar certificado de aprobación sin calificación mínima → Espera error 400 con mensaje "CALIFICACION_INSUFICIENTE"
   3. Descargar certificado en PDF → Espera archivo PDF válido con datos correctos
-
-### Módulo 7: Informes y Agendas
-- **Tipo de Prueba**: Unitarias (generación de informes), Integración (BD), Aceptación (organizador)
-- **Alcance**: Generación de informes de inscripciones/encuestas, creación de agendas
-- **Criterio de Aceptación**: Informes incluyen todos los datos requeridos; agendas se muestran correctamente.
-- **Criterio de Rechazo**: Informe de inscripciones no incluye total de acreditados; agenda muestra eventos cancelados.
-- **Casos de Prueba de Ejemplo**:
-  1. Generar informe de inscripciones para evento sin inscritos → Espera informe con total 0
-  2. Crear agenda para evento cancelado → Espera error 400 con mensaje "EVENTO_CANCELADO"
-  3. Exportar informe a Excel → Espera archivo Excel válido con datos correctos
 
 ### Módulo 8: Catálogo Público
 - **Tipo de Prueba**: Unitarias (filtros), Integración (consulta a Gestión de Eventos), Aceptación (usuario no autenticado)
