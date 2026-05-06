@@ -80,7 +80,7 @@ Algunos detalles:
 
 ## 6. Plan de Tareas
 ### Tiempo Total Estimado del Proyecto
-Total de días hábiles sumados de todas las tareas: 53 días hábiles → 10.6 semanas (~11 semanas totales).
+- Total de días hábiles sumados de todas las tareas: 69 días hábiles → 13.8 semanas (~14 semanas totales).
 ---
 
 ## 7. Estrategia de Verificación
