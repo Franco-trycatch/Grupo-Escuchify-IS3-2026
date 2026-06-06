@@ -1,0 +1,35 @@
+YAML
+version: '3.8'
+
+services:
+  # Servicio 1: Tu Aplicación
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - DB_HOST=db
+      - DB_USER=usuario
+      - DB_PASSWORD=secreto
+      - DB_NAME=mi_base_datos
+    depends_on:
+      - db
+
+  # Servicio 2: Persistencia (Base de Datos PostgreSQL como ejemplo)
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: usuario
+      POSTGRES_PASSWORD: secreto
+      POSTGRES_DB: mi_base_datos
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
